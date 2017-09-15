@@ -142,9 +142,9 @@ public class Tela extends javax.swing.JFrame {
         Monitor monitor = new Monitor(conta);
         
         //Cria as Threads que irão consumir o recurso da conta através do monitor
-        Consumidor AGastadora = new Consumidor("AGastadora", 3000, 10, monitor);
-        Consumidor AEsperta = new Consumidor("AEsperta", 6000, 50, monitor);
-        Consumidor AEconomica = new Consumidor("AEconomica", 12000, 5, monitor);
+        Consumidor AGastadora = FabricaConsumidor.criarConsumidor("AGastadora", 3000, 10, monitor);
+        Consumidor AEsperta = FabricaConsumidor.criarConsumidor("AEsperta", 6000, 50, monitor);
+        Consumidor AEconomica = FabricaConsumidor.criarConsumidor("AEconomica", 12000, 5, monitor);
         //Cria a Thread que irá produzir o recurso da conta
         Produtor APatrocinadora = new Produtor("APatrocinadora", monitor);
                 

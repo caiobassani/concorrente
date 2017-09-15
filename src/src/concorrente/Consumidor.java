@@ -16,7 +16,7 @@ public class Consumidor extends Thread {
 
     /**
      * Construtor da classe.
-     * 
+     *
      * @param name nome do consumidor
      * @param tempo intervalo de tempo esperado entre cada saque efetuado
      * @param valor valor a ser retirado em cada saque
@@ -32,34 +32,32 @@ public class Consumidor extends Thread {
     }
 
     /**
-     * Retorna o total sacado até o momento.
-     * 
-     * @return total sacado
+     * Imprime o extrato do consumidor.
      */
-    public double getTotalSacado() {
-        return totalSacado;
+    public void imprimirExtrato() {
+        DataLogger.log("=> " + getName() + " sacou em " + contSaques + " vez" + (contSaques == 1 ? "" : "es") + " um total de R$: " + totalSacado);
     }
 
     /**
-     * Retorna a quantidade de saques efetuados pelo consumidor até o momento.
-     * 
-     * @return a quantidade de saques
+     * Zera o total de saques e total sacado do consumidor até o momento.
      */
-    public int getContSaques() {
-        return contSaques;
+    public void zerarExtrato() {
+        contSaques = 0;
+        totalSacado = 0;
     }
-    
+
     /**
-     * Rotina de execução do consumidor. Faz saques periódicos na conta até
-     * seu esgotamento e espera até que a conta ganhe recursos para então
-     * repetir o processo.
+     * Rotina de execução do consumidor. Faz saques periódicos na conta até seu
+     * esgotamento e espera até que a conta ganhe recursos para então repetir o
+     * processo.
      */
     @Override
     public void run() {
         while (true) {
-            monitor.sacar(valor);
-            totalSacado += valor;
-            contSaques++;
+            if (monitor.sacar(valor)) {
+                totalSacado += valor;
+                contSaques++;
+            }
             try {
                 Thread.sleep(tempo);
             } catch (InterruptedException ex) {
