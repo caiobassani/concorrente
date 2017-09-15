@@ -8,17 +8,17 @@ package concorrente;
  */
 public class Produtor extends Thread {
 
-    private Conta conta;
+    private Monitor monitor;
 
     /**
      * Construtor da classe.
      * 
      * @param name nome do produtor
-     * @param conta conta que receberá os recursos produzidos
+     * @param monitor monitor dos recursos compartilhados (conta)
      */
-    public Produtor(String name, Conta conta) {
+    public Produtor(String name, Monitor monitor) {
         super(name);
-        this.conta = conta;
+        this.monitor = monitor;
     }
 
     /**
@@ -29,17 +29,7 @@ public class Produtor extends Thread {
     @Override
     public void run() {
         while (true) {
-            //Deposita R$100,00 ao saldo da conta quando não for mais possivel sacar nada
-            if (conta.getSaldo() <= 0) {
-                synchronized (conta) {
-                    DataLogger.log("----------------------------------------");
-                    DataLogger.log("=> Acabou o dinheiro");
-                    conta.depositar(100);
-                    //Notifica os consumidores que há saldo
-                    DataLogger.log("=> Notificando as Threads consumidoras para acordar...");
-                    conta.notifyAll();
-                }
-            }
+            monitor.depositar(100);
         }
     }
 }

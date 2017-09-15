@@ -136,18 +136,21 @@ public class Tela extends javax.swing.JFrame {
      * Inicia o processamento dos saques e depósitos na conta do sistema.
      */
     public void iniciar() {
-        //Cria a conta com saldo inicial de R$10000,00
-        Conta conta = new Conta(10, "Caio", 500);
-        //Cria as Threads que irão consumir o recurso da conta
-        Consumidor AGastadora = new Consumidor("AGastadora", 3000, 10, conta);
-        Consumidor AEsperta = new Consumidor("AEsperta", 6000, 50, conta);
-        Consumidor AEconomica = new Consumidor("AEconomica", 12000, 5, conta);
-        //Cria a Thread que irá produzir o recurso da conta
-        Produtor APatrocinadora = new Produtor("APatrocinadora", conta);       
+        //Cria a conta com saldo inicial de R$300,00
+        Conta conta = new Conta(10, "Caio", 300);
+        //Cria o monitor da conta
+        Monitor monitor = new Monitor(conta);
         
+        //Cria as Threads que irão consumir o recurso da conta através do monitor
+        Consumidor AGastadora = new Consumidor("AGastadora", 3000, 10, monitor);
+        Consumidor AEsperta = new Consumidor("AEsperta", 6000, 50, monitor);
+        Consumidor AEconomica = new Consumidor("AEconomica", 12000, 5, monitor);
+        //Cria a Thread que irá produzir o recurso da conta
+        Produtor APatrocinadora = new Produtor("APatrocinadora", monitor);
+                
         //Coloca as Threads para rodar
         AGastadora.start();               
-        AEsperta.start();               
+        AEsperta.start();
         AEconomica.start();
         
         APatrocinadora.start();

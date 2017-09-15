@@ -10,7 +10,7 @@ public class Consumidor extends Thread {
 
     private int tempo;
     private double valor;
-    private Conta conta;
+    private Monitor monitor;
     private double totalSacado;
     private int contSaques;
 
@@ -20,17 +20,35 @@ public class Consumidor extends Thread {
      * @param name nome do consumidor
      * @param tempo intervalo de tempo esperado entre cada saque efetuado
      * @param valor valor a ser retirado em cada saque
-     * @param conta conta cujos recursos serão consumidos
+     * @param monitor monitor dos recursos compartilhados (conta)
      */
-    public Consumidor(String name, int tempo, double valor, Conta conta) {
+    public Consumidor(String name, int tempo, double valor, Monitor monitor) {
         super(name);
         this.tempo = tempo;
         this.valor = valor;
-        this.conta = conta;
+        this.monitor = monitor;
         this.totalSacado = 0;
         this.contSaques = 0;
     }
 
+    /**
+     * Retorna o total sacado até o momento.
+     * 
+     * @return total sacado
+     */
+    public double getTotalSacado() {
+        return totalSacado;
+    }
+
+    /**
+     * Retorna a quantidade de saques efetuados pelo consumidor até o momento.
+     * 
+     * @return a quantidade de saques
+     */
+    public int getContSaques() {
+        return contSaques;
+    }
+    
     /**
      * Rotina de execução do consumidor. Faz saques periódicos na conta até
      * seu esgotamento e espera até que a conta ganhe recursos para então
@@ -39,24 +57,13 @@ public class Consumidor extends Thread {
     @Override
     public void run() {
         while (true) {
-            synchronized (conta) {
-                if (conta.sacar(valor)) {
-                    totalSacado += valor;
-                    contSaques++;
-                    try {
-                        conta.wait(tempo);
-                    } catch (InterruptedException ex) {
-                        DataLogger.log("=> " + Thread.currentThread().getName() + " foi interrompida!");
-                    }
-                } else {
-                    try {
-                        DataLogger.log("=> " + Thread.currentThread().getName() + " não consegue mais sacar. Sacou em " + contSaques + " vezes um total de R$: " + totalSacado);
-                        DataLogger.log("=> Colocando " + Thread.currentThread().getName() + " para dormir...");
-                        conta.wait();
-                    } catch (InterruptedException ex) {
-                        DataLogger.log("=> " + Thread.currentThread().getName() + " foi interrompida!");
-                    }
-                }
+            monitor.sacar(valor);
+            totalSacado += valor;
+            contSaques++;
+            try {
+                Thread.sleep(tempo);
+            } catch (InterruptedException ex) {
+                DataLogger.log("=> " + Thread.currentThread().getName() + " foi interrompida!");
             }
         }
     }

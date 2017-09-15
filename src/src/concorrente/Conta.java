@@ -29,7 +29,7 @@ public class Conta {
      * 
      * @return o saldo da conta
      */
-    public synchronized double getSaldo() {
+    public double getSaldo() {
         return saldo;
     }
 
@@ -38,7 +38,7 @@ public class Conta {
      * 
      * @param saldo novo valor de saldo
      */
-    public synchronized void setSaldo(double saldo) {
+    public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
@@ -50,8 +50,7 @@ public class Conta {
      * @return true caso o saque tenha ocorrido com sucesso e false caso
      * contrário
      */
-    public synchronized boolean sacar(double valor) {
-        //Testa para ver se existe saldo
+    public boolean sacar(double valor) {
         if (saldo - valor >= 0) {
             saldo = saldo - valor;
             DataLogger.log("[SAQUE] " + Thread.currentThread().getName() + " sacou R$: " + valor + ". Saldo após o saque R$: " + saldo);
@@ -66,9 +65,7 @@ public class Conta {
      * 
      * @param valor valor a ser depositado
      */
-    public synchronized void depositar(double valor) {
+    public void depositar(double valor) {
         saldo += valor;
-        DataLogger.log("[DEPOSITO] " + Thread.currentThread().getName() + " depositou R$: " + valor + ". Saldo após o depósito R$: " + saldo);
-        DataLogger.setSaldoAtual(saldo);
     }
 }
