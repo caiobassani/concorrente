@@ -1,6 +1,12 @@
 package concorrente;
 
-public class Saque extends Thread {
+/**
+ * Consumidor dos recursos da conta do sistema. Cada consumidor é independente,
+ * isto é, representa uma Thread separada. O consumidor retira de tempos em
+ * tempos algum valor da conta até que essa se esgote; nesse caso, o consumidor
+ * aguarda até que seja notificado que a conta contém recursos novamente.
+ */
+public class Consumidor extends Thread {
 
     private int tempo;
     private double valor;
@@ -8,7 +14,15 @@ public class Saque extends Thread {
     private double totalSacado;
     private int contSaques;
 
-    public Saque(String name, int tempo, double valor, Conta conta) {
+    /**
+     * Construtor da classe.
+     * 
+     * @param name nome do consumidor
+     * @param tempo intervalo de tempo esperado entre cada saque efetuado
+     * @param valor valor a ser retirado em cada saque
+     * @param conta conta cujos recursos serão consumidos
+     */
+    public Consumidor(String name, int tempo, double valor, Conta conta) {
         super(name);
         this.tempo = tempo;
         this.valor = valor;
@@ -17,6 +31,11 @@ public class Saque extends Thread {
         this.contSaques = 0;
     }
 
+    /**
+     * Rotina de execução do consumidor. Faz saques periódicos na conta até
+     * seu esgotamento e espera até que a conta ganhe recursos para então
+     * repetir o processo.
+     */
     @Override
     public void run() {
         while (true) {
